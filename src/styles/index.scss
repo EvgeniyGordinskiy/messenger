@@ -1,0 +1,38 @@
+@import 'fonts/font-variation';
+@import 'responsive';
+
+@import 'fonts/font-face';
+
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  @include fontRegular();
+  background-color: $color-white;
+}
+
+.flex {
+  display: flex;
+  display: -webkit-box;
+}
+.flex-direction-column {
+  flex-direction: column;
+}
+.align-center {
+  text-align: center;
+}
+.justify-content-between {
+  justify-content: space-between;
+}

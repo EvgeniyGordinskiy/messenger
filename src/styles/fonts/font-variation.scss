@@ -1,0 +1,26 @@
+@mixin fontRegular($style: null) {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+
+  @if ($style) {
+    font-style: $style;
+  }
+}
+
+@mixin fontSemibold($style: null) {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+
+  @if ($style) {
+    font-style: $style;
+  }
+}
+
+@mixin fontBold($style: null) {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+
+  @if ($style) {
+    font-style: $style;
+  }
+}
