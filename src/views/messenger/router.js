@@ -1,7 +1,7 @@
-const route = () => import('./Messenger')
+const component = () => import('./Messenger')
 
 export default {
   name: 'messenger',
   path: '/',
-  route,
+  component,
 }

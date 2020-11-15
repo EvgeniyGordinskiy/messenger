@@ -1,15 +1,26 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    "jest": true,
+    "node": true,
+    "browser": true,
+    "es6": true
   },
   extends: ["plugin:vue/essential", "eslint:recommended", "@vue/prettier"],
   parserOptions: {
     parser: "babel-eslint"
   },
   rules: {
-    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off"
+    "no-tabs": 2,
+    "comma-dangle": "off",
+    "import/first": "off",
+    "vue/require-prop-types": "off",
+    "vue/max-attributes-per-line": "off",
+    "space-before-function-paren": "off",
+    "vue/no-side-effects-in-computed-properties": "off",
+    "no-console": process.env.NODE_ENV === "production" ? "err" : "warn",
+    "no-debugger": process.env.NODE_ENV === "production" ? "err" : "warn",
+    "no-unused-vars": process.env.NODE_ENV === "production" ? "err" : "warn",
   },
   overrides: [
     {
