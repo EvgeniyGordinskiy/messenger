@@ -9,7 +9,7 @@
             :key="recipient.id"
             :name="recipient.name"
             :avatar="recipient.avatar"
-            :isSelected="currentRecipient && (currentRecipient.id === recipient.id)"
+            :isSelected="currentRecipient && currentRecipient.id === recipient.id"
           />
         </template>
       </div>
@@ -33,21 +33,7 @@
           </ul>
         </div>
         <div class="messenger--main--input">
-          <form @submit.prevent="addMessageToHistory"></form>
-          <div
-            :contenteditable="!!currentRecipient"
-            ref="textInput"
-            @keydown.enter="addMessageToHistory"
-            @input="messageText = $event.target.innerText"
-          ></div>
-          <Picker
-            :show-preview="false"
-            :show-skin-tones="false"
-            :show-categories="false"
-            :show-search="false"
-            native
-            @select="emojiPicked"
-          />
+          <InputMsg @add-message="addMessageToHistory" :recipient="currentRecipient" :isEnabled="!!currentRecipient" />
         </div>
       </div>
     </div>
@@ -55,11 +41,12 @@
 </template>
 <script>
 import { get } from 'lodash'
-import { Picker } from 'emoji-mart-vue'
 import Recipient from '@/views/messenger/components/Recipient'
+import InputMsg from '@/views/messenger/components/InputMsg'
+
 export default {
   name: 'messenger',
-  components: { Recipient, Picker },
+  components: { InputMsg, Recipient },
   data() {
     return {
       user: {
@@ -98,30 +85,19 @@ export default {
     },
   },
   methods: {
-    addMessageToHistory(e) {
-      if (e.shiftKey) {
-        return
-      }
-
-      e.preventDefault()
+    addMessageToHistory(message) {
       const recipientId = get(this.currentRecipient, 'id')
 
-      if (recipientId && this.messageText.length) {
+      if (recipientId && message.length) {
         const messages = get(this.history, recipientId, [])
         messages.push({
           recipientId,
           date: new Date(),
-          text: this.messageText,
+          text: message,
           senderId: this.user.id,
         })
         this.$set(this.history, recipientId, messages)
-        this.$refs.textInput.innerText = ''
-        this.messageText = ''
       }
-    },
-    emojiPicked(emoji) {
-      this.messageText += emoji.native
-      this.$refs.textInput.innerText += emoji.native
     },
   },
 }
@@ -133,6 +109,7 @@ export default {
   height: 100%;
 }
 .messenger {
+  display: flex;
   margin: 0 auto;
   width: 800px;
   height: 600px;
@@ -145,8 +122,7 @@ export default {
     height: 100%;
   }
   &--sidebar {
-    float: left;
-    width: 230px;
+    min-width: 230px;
     background-color: $color-brand--40;
     border-right: 1px solid $color-brand--50;
     border-top-left-radius: 3px;
@@ -154,17 +130,11 @@ export default {
   }
   &--main {
     position: relative;
-    overflow: hidden;
     background-color: $color-white;
+    width: 600px;
     &--history {
-      height: calc(100% - 160px);
-    }
-    &--input {
-      position: absolute;
-      width: 100%;
-      height: 160px;
-      bottom: 0;
-      left: 0;
+      height: calc(100% - 86px);
+      padding: 10px;
     }
   }
 }
