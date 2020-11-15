@@ -1,52 +1,54 @@
 <template>
-  <div class="messenger-page">
-    <div class="messenger-page--sidebar">
-      <ul>
-        <li @click="currentRecipient = { id: 1, name: 'John' }">
-          <span>John</span>
-          <img src="../../assets/no_avatar.png" />
-        </li>
-        <li @click="currentRecipient = { id: 2, name: 'Drone' }">
-          <span>Drone</span>
-          <img src="@/assets/no_avatar.png" />
-        </li>
-      </ul>
-    </div>
-    <div class="messenger-page--main">
-      <div class="messenger-page--main--history">
-        <ul>
-          <li v-for="item in messages" :key="item.id">
-            <p class="time">
-              <span>{{ item.date | time }}</span>
-            </p>
-            <div class="main" :class="{ self: item.senderId === user.id }">
-              <img
-                class="avatar"
-                width="25"
-                height="25"
-                :src="item.senderId === user.id ? user.img : currentRecipient.user.img"
-              />
-              <div class="text">{{ item.text }}</div>
-            </div>
-          </li>
-        </ul>
+  <div class="messenger-wrapper">
+    <div class="messenger">
+      <div class="messenger--sidebar">
+        <template v-for="recipient of recipients">
+          <Recipient
+            @click.native="currentRecipient = recipient"
+            :currentRecipient="currentRecipient"
+            :key="recipient.id"
+            :name="recipient.name"
+            :avatar="recipient.avatar"
+            :isSelected="currentRecipient && (currentRecipient.id === recipient.id)"
+          />
+        </template>
       </div>
-      <div class="messenger-page--main--input">
-        <form @submit.prevent="addMessageToHistory"></form>
-        <div
-          :contenteditable="!!currentRecipient"
-          ref="textInput"
-          @keydown.enter="addMessageToHistory"
-          @input="messageText = $event.target.innerText"
-        ></div>
-        <Picker
-          :show-preview="false"
-          :show-skin-tones="false"
-          :show-categories="false"
-          :show-search="false"
-          native
-          @select="emojiPicked"
-        />
+      <div class="messenger--main">
+        <div class="messenger--main--history">
+          <ul>
+            <li v-for="item in messages" :key="item.id">
+              <p class="time">
+                <span>{{ item.date | time }}</span>
+              </p>
+              <div class="main" :class="{ self: item.senderId === user.id }">
+                <img
+                  class="avatar"
+                  width="25"
+                  height="25"
+                  :src="item.senderId === user.id ? user.img : currentRecipient.user.img"
+                />
+                <div class="text">{{ item.text }}</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="messenger--main--input">
+          <form @submit.prevent="addMessageToHistory"></form>
+          <div
+            :contenteditable="!!currentRecipient"
+            ref="textInput"
+            @keydown.enter="addMessageToHistory"
+            @input="messageText = $event.target.innerText"
+          ></div>
+          <Picker
+            :show-preview="false"
+            :show-skin-tones="false"
+            :show-categories="false"
+            :show-search="false"
+            native
+            @select="emojiPicked"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -54,9 +56,10 @@
 <script>
 import { get } from 'lodash'
 import { Picker } from 'emoji-mart-vue'
+import Recipient from '@/views/messenger/components/Recipient'
 export default {
   name: 'messenger',
-  components: { Picker },
+  components: { Recipient, Picker },
   data() {
     return {
       user: {
@@ -74,6 +77,7 @@ export default {
         {
           id: 2,
           name: 'Job Doe',
+          avatar: require('../../assets/no_avatar.png'),
         },
       ],
       currentRecipient: null,
@@ -124,12 +128,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.messenger-page {
-  margin: 20px auto;
+.messenger-wrapper {
+  display: flex;
+  height: 100%;
+}
+.messenger {
+  margin: 0 auto;
   width: 800px;
   height: 600px;
-
-  overflow: hidden;
+  align-self: center;
+  box-shadow: 0 0 3px 1px $color-white;
   border-radius: 3px;
 
   &--sidebar,
@@ -138,12 +146,16 @@ export default {
   }
   &--sidebar {
     float: left;
-    width: 200px;
+    width: 230px;
+    background-color: $color-brand--40;
+    border-right: 1px solid $color-brand--50;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
   }
   &--main {
     position: relative;
     overflow: hidden;
-    background-color: #eee;
+    background-color: $color-white;
     &--history {
       height: calc(100% - 160px);
     }
