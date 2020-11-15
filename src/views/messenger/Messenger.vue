@@ -15,22 +15,18 @@
       </div>
       <div class="messenger--main">
         <div class="messenger--main--history">
-          <ul>
-            <li v-for="item in messages" :key="item.id">
-              <p class="time">
-                <span>{{ item.date | time }}</span>
-              </p>
-              <div class="main" :class="{ self: item.senderId === user.id }">
-                <img
-                  class="avatar"
-                  width="25"
-                  height="25"
-                  :src="item.senderId === user.id ? user.img : currentRecipient.user.img"
-                />
-                <div class="text">{{ item.text }}</div>
-              </div>
-            </li>
-          </ul>
+          <HistoryItem v-for="item in messages" :key="item.id" :item="item">
+            <div class="history-item--content--user-info">
+              <img
+                class="avatar"
+                width="25"
+                height="25"
+                :src="item.senderId === user.id ? user.avatar : currentRecipient.avatar"
+              />
+              <span>{{ getUserNameById(item.senderId) }}</span>
+            </div>
+            <div class="text">{{ item.text }}</div>
+          </HistoryItem>
         </div>
         <div class="messenger--main--input">
           <InputMsg @add-message="addMessageToHistory" :recipient="currentRecipient" :isEnabled="!!currentRecipient" />
@@ -40,21 +36,30 @@
   </div>
 </template>
 <script>
-import { get } from 'lodash'
+import { get, find } from 'lodash'
 import Recipient from '@/views/messenger/components/Recipient'
 import InputMsg from '@/views/messenger/components/InputMsg'
+import HistoryItem from '@/views/messenger/components/HistoryItem'
 
 export default {
   name: 'messenger',
-  components: { InputMsg, Recipient },
+  components: { HistoryItem, InputMsg, Recipient },
   data() {
     return {
       user: {
         id: 0,
-        name: 'Johnny',
-        img: require('../../assets/no_avatar.png'),
+        name: 'Johnny User',
+        avatar: require('../../assets/no_avatar.png'),
       },
-      history: {},
+      history: {
+        1: [
+          {
+            senderId: 1,
+            date: new Date(),
+            text: 'Hi, User',
+          },
+        ],
+      },
       recipients: [
         {
           id: 1,
@@ -71,14 +76,6 @@ export default {
       messageText: '',
     }
   },
-  filters: {
-    time(date) {
-      if (typeof date === 'string') {
-        date = new Date(date)
-      }
-      return date.getHours() + ':' + date.getMinutes()
-    },
-  },
   computed: {
     messages() {
       return get(this.history, this.currentRecipient?.id, [])
@@ -91,13 +88,18 @@ export default {
       if (recipientId && message.length) {
         const messages = get(this.history, recipientId, [])
         messages.push({
-          recipientId,
           date: new Date(),
           text: message,
           senderId: this.user.id,
         })
         this.$set(this.history, recipientId, messages)
       }
+    },
+    getUserNameById(id) {
+      if (id === this.user.id) {
+        return this.user.name
+      }
+      return get(find(this.recipients, { id }), 'name', '')
     },
   },
 }
