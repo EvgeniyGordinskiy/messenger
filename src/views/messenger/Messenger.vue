@@ -4,7 +4,7 @@
       <div class="messenger--sidebar">
         <template v-for="recipient of recipients">
           <Recipient
-            @click.native="currentRecipient = recipient"
+            @click.native="onSelectRecipient(recipient)"
             :currentRecipient="currentRecipient"
             :key="recipient.id"
             :name="recipient.name"
@@ -89,6 +89,10 @@ export default {
     },
   },
   methods: {
+    onSelectRecipient(recipient) {
+      this.currentRecipient = recipient
+      this.scrollHistoryToBottom()
+    },
     addMessageToHistory(message) {
       const recipientId = get(this.currentRecipient, 'id')
 
@@ -100,7 +104,7 @@ export default {
           senderId: this.user.id,
         })
         this.$set(this.history, recipientId, messages)
-        this.scrollToBottom()
+        this.scrollHistoryToBottom()
       }
     },
     getUserNameById(id) {
@@ -109,13 +113,9 @@ export default {
       }
       return get(find(this.recipients, { id }), 'name', '')
     },
-    scrollToBottom() {
+    scrollHistoryToBottom() {
       this.$nextTick(() => {
-        const element = this.$refs.history
-        const isScrolledToBottom = element.scrollHeight - element.clientHeight <= element.scrollTop + 1
-        if (!isScrolledToBottom) {
-          element.scrollTop = element.scrollHeight
-        }
+        this.$refs.history.scrollTop = this.$refs.history.scrollHeight
       })
     },
   },
