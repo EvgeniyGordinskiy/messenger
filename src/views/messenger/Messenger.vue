@@ -99,7 +99,7 @@ export default {
       if (recipientId && message.length) {
         const messages = get(this.history, recipientId, [])
         messages.push({
-          date: new Date(),
+          date: Date.now(),
           text: message,
           senderId: this.user.id,
         })

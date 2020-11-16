@@ -18,7 +18,7 @@ export default {
   },
   filters: {
     time(date) {
-      if (typeof date === 'string') {
+      if (['string', 'number'].includes(typeof date)) {
         date = new Date(date)
       }
       return date.getHours() + ':' + date.getMinutes()
