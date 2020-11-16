@@ -1,4 +1,4 @@
-export const timeFilter = (date) => {
+export const timeFilter = date => {
   if (['string', 'number'].includes(typeof date)) {
     date = new Date(date)
   }

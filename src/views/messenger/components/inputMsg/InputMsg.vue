@@ -12,7 +12,7 @@
           Please choose a recipient
         </span>
       </div>
-      <div @click="isEnabled ? isEmojiEnabled = !isEmojiEnabled : null" class="inputMsg-wrapper--emoji-btn">☺</div>
+      <div @click="isEnabled ? (isEmojiEnabled = !isEmojiEnabled) : null" class="inputMsg-wrapper--emoji-btn">☺</div>
     </div>
     <Picker
       v-show="isEmojiEnabled"

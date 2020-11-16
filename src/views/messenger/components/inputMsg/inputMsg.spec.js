@@ -8,18 +8,18 @@ describe('Input Message', () => {
     wrapper = shallowMount(InputMsg)
   })
 
+  it('doesnt emit a new message', () => {
+    wrapper.vm.messageText = ''
+    wrapper.vm.addMessageToHistory({ preventDefault: () => {} })
+    expect(wrapper.emitted('add-message')).not.toEqual([['New Message']])
+  })
+
   it('emits a new message and clear the state', () => {
     const spy = jest.spyOn(wrapper.vm, 'clearInput')
     wrapper.vm.messageText = 'New Message'
     wrapper.vm.addMessageToHistory({ preventDefault: () => {} })
     expect(wrapper.emitted('add-message')).toEqual([['New Message']])
     expect(spy).toBeCalled()
-  })
-
-  it('doesnt emit a new message', () => {
-    wrapper.vm.messageText = ''
-    wrapper.vm.addMessageToHistory({ preventDefault: () => {} })
-    expect(wrapper.emitted('add-message')).toEqual([['New Message']])
   })
 
   it('clears the state', () => {

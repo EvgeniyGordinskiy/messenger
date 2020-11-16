@@ -15,7 +15,7 @@ export default {
     isSelected: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     avatar: {
       required: true,
