@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import { timeFilter } from '@/utils'
+
 export default {
   name: 'historyItem',
   props: {
@@ -17,12 +19,7 @@ export default {
     },
   },
   filters: {
-    time(date) {
-      if (['string', 'number'].includes(typeof date)) {
-        date = new Date(date)
-      }
-      return date.getHours() + ':' + date.getMinutes()
-    },
+    time: timeFilter,
   },
 }
 </script>

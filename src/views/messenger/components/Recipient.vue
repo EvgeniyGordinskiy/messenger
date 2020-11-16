@@ -6,7 +6,6 @@
     </div>
     <div class="separator"></div>
   </div>
-
 </template>
 
 <script>
