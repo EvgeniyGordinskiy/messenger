@@ -38,7 +38,7 @@
 <script>
 import { get, find } from 'lodash'
 import Recipient from '@/views/messenger/components/Recipient'
-import InputMsg from '@/views/messenger/components/InputMsg'
+import InputMsg from '@/views/messenger/components/inputMsg/InputMsg'
 import HistoryItem from '@/views/messenger/components/historyItem/HistoryItem'
 
 export default {
