@@ -61,7 +61,7 @@ export default {
         ],
         2: [
           {
-            senderId: 1,
+            senderId: 2,
             date: new Date(),
             text: 'Hi, Santa! Are we ready to go?',
           },
