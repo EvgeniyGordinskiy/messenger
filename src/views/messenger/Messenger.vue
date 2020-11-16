@@ -14,7 +14,7 @@
         </template>
       </div>
       <div class="messenger--main">
-        <div class="messenger--main--history">
+        <div class="messenger--main--history" ref="history">
           <HistoryItem v-for="item in messages" :key="item.id" :item="item">
             <div class="history-item--content--user-info">
               <img
@@ -48,28 +48,35 @@ export default {
     return {
       user: {
         id: 0,
-        name: 'Johnny User',
-        avatar: require('../../assets/no_avatar.png'),
+        name: 'Santa',
+        avatar: require('../../assets/santaAvatar.png'),
       },
       history: {
         1: [
           {
             senderId: 1,
             date: new Date(),
-            text: 'Hi, User',
+            text: "Hi, Santa! What's the plan?",
+          },
+        ],
+        2: [
+          {
+            senderId: 1,
+            date: new Date(),
+            text: 'Hi, Santa! Are we ready to go?',
           },
         ],
       },
       recipients: [
         {
           id: 1,
-          name: 'John Doe',
-          avatar: require('../../assets/no_avatar.png'),
+          name: 'Tickle',
+          avatar: require('../../assets/elfAvatar.png'),
         },
         {
           id: 2,
-          name: 'Job Doe',
-          avatar: require('../../assets/no_avatar.png'),
+          name: 'Rudolph',
+          avatar: require('../../assets/deerAvatar.png'),
         },
       ],
       currentRecipient: null,
@@ -93,6 +100,7 @@ export default {
           senderId: this.user.id,
         })
         this.$set(this.history, recipientId, messages)
+        this.scrollToBottom()
       }
     },
     getUserNameById(id) {
@@ -100,6 +108,15 @@ export default {
         return this.user.name
       }
       return get(find(this.recipients, { id }), 'name', '')
+    },
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const element = this.$refs.history
+        const isScrolledToBottom = element.scrollHeight - element.clientHeight <= element.scrollTop + 1
+        if (!isScrolledToBottom) {
+          element.scrollTop = element.scrollHeight
+        }
+      })
     },
   },
 }
@@ -137,6 +154,7 @@ export default {
     &--history {
       height: calc(100% - 86px);
       padding: 10px;
+      overflow: auto;
     }
   }
 }
