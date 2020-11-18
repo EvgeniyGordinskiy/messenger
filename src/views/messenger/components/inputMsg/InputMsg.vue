@@ -6,7 +6,7 @@
         ref="textInput"
         class="inputMsg-wrapper--input"
         @keydown.enter="addMessageToHistory"
-        @input="messageText = $event.target.innerText"
+        @input="onInputMessageText"
       >
         <span v-if="!isEnabled">
           Please choose a recipient
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { get } from 'lodash'
 import { Picker } from 'emoji-mart-vue'
 
 export default {
@@ -46,11 +47,13 @@ export default {
     return {
       messageText: '',
       isEmojiEnabled: false,
+      draftHistory: {},
     }
   },
   watch: {
     recipient() {
       this.clearInput()
+      this.setMessageFromDraftHistory()
     },
   },
   methods: {
@@ -64,18 +67,36 @@ export default {
       if (this.messageText.length) {
         this.$emit('add-message', this.messageText)
         this.clearInput()
+        this.draftHistory[this.recipient.id] = ''
       }
     },
+
     emojiPicked(emoji) {
       if (this.isEnabled) {
         this.messageText += emoji.native
         this.$refs.textInput.innerText += emoji.native
+        this.addMessageToDraftHistory()
       }
     },
+
     clearInput() {
       this.$refs.textInput.innerText = ''
       this.messageText = ''
       this.isEmojiEnabled = false
+    },
+
+    onInputMessageText(e) {
+      this.messageText = e.target.innerText
+      this.addMessageToDraftHistory()
+    },
+
+    addMessageToDraftHistory() {
+      this.draftHistory[this.recipient.id] = this.messageText
+    },
+
+    setMessageFromDraftHistory() {
+      this.messageText = get(this.draftHistory, this.recipient.id, '')
+      this.$refs.textInput.innerText = this.messageText
     },
   },
 }
