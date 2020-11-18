@@ -7,7 +7,7 @@
             @click.native="onSelectRecipient(recipient)"
             :currentRecipient="currentRecipient"
             :key="recipient.id"
-            :name="recipient.name"
+            :name="typeof recipient.id === 'string' ? getGroupName(recipient.id) : recipient.name"
             :avatar="recipient.avatar"
             :isSelected="currentRecipient && currentRecipient.id === recipient.id"
           />
@@ -21,7 +21,7 @@
                 class="avatar"
                 width="25"
                 height="25"
-                :src="item.senderId === user.id ? user.avatar : currentRecipient.avatar"
+                :src="item.senderId === user.id ? user.avatar : fetchUserDataById(item.senderId, 'avatar')"
               />
               <span>{{ getUserNameById(item.senderId) }}</span>
             </div>
@@ -66,6 +66,13 @@ export default {
             text: 'Hi, Santa! Are we ready to go?',
           },
         ],
+        '1,2': [
+          {
+            senderId: 2,
+            date: new Date(),
+            text: "Hi, It's a group chat!",
+          },
+        ],
       },
       recipients: [
         {
@@ -77,6 +84,11 @@ export default {
           id: 2,
           name: 'Rudolph',
           avatar: require('../../assets/deerAvatar.png'),
+        },
+        {
+          id: '1,2',
+          name: '',
+          avatar: require('../../assets/no_avatar.png'),
         },
       ],
       currentRecipient: null,
@@ -111,12 +123,31 @@ export default {
       if (id === this.user.id) {
         return this.user.name
       }
-      return get(find(this.recipients, { id }), 'name', '')
+      return this.fetchUserDataById(id)
     },
+
+    fetchUserDataById(id, field = 'name') {
+      return get(find(this.recipients, { id: Number(id) }), field, '')
+    },
+
     scrollHistoryToBottom() {
       this.$nextTick(() => {
         this.$refs.history.scrollTop = this.$refs.history.scrollHeight
       })
+    },
+
+    getGroupName(id) {
+      let name = ''
+      const ids = id.split(',')
+
+      ids.forEach((i, index) => {
+        if (index == !0 && index < ids.length) {
+          name += ', '
+        }
+        name += this.fetchUserDataById(i)
+      })
+
+      return name
     },
   },
 }
